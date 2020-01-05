@@ -6,7 +6,7 @@ from outlier_detection.exception import IllegalLinkIndexException, MalformedTime
 
 
 class LinkDistortion:
-    def __init__(self, stream_time_frames: Dict[List[np.array]]):
+    def __init__(self, stream_time_frames: Dict):
         self.time_frames = stream_time_frames
 
     def min_distort(self, link_index):
@@ -30,10 +30,10 @@ class LinkDistortion:
         if len(link_time_frames) == 1:
             raise MalformedTimeFrameException("More time frames is needed to compute distortion.")
 
-        if any(len(link_time_frames[i]) != link_time_frames[i - 1] for i in range(1, len(link_time_frames))):
+        if any(len(link_time_frames[i]) != len(link_time_frames[i - 1]) for i in range(1, len(link_time_frames))):
             raise MalformedTimeFrameException("Time frames have not same bins.")
 
     @staticmethod
     def _compute_time_frame_distance(tf_1, tf_2):
-        diff = np.sum(np.array([np.power(tf_1[time_bin] - tf_2[time_bin], 2) for time_bin in range(len(tf_1))]))
+        diff = np.sqrt(np.sum(np.array([np.power(tf_1[time_bin] - tf_2[time_bin], 2) for time_bin in range(len(tf_1))])))
         return diff
