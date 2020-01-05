@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Ignore idea
+.idea/
+
+# For now ignore pre process phase
+data_pre_processing/
