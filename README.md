@@ -1,2 +1,2 @@
 # probable-pancake
-Stream outlier casualty detecotor
+Stream outlier causality relation detecotor
