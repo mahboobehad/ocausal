@@ -1,7 +1,7 @@
 # In the name of Allah
 
 
-class IllegalLinkIndexException(Exception):
+class IllegalIndexException(Exception):
     def __init__(self):
         Exception.__init__(self)
 
