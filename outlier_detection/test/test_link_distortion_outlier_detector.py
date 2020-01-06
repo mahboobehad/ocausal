@@ -1,7 +1,6 @@
 # In the name of Allah
 
 import numpy as np
-import pytest
 
 from outlier_detection.link_distortion_outlier_detector import LinkDistortionOutlierDetector
 
@@ -18,9 +17,7 @@ class TestLinkDistortion:
         expected_min_distort = 5.
         assert min_distort == expected_min_distort
 
-    @pytest.mark.skip(reason="Feature outlier is needed.")
-    def test_find_outlier(self):
+    def test_find_outliers(self):
         distortion = LinkDistortionOutlierDetector(self.time_frame)
-        outliers = distortion.find_outliers()
-        # Testing this method is tricky, outlier evaluation is depended on context
+        outliers = distortion.find_outliers(0)
         assert len(outliers) != 0

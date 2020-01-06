@@ -2,13 +2,23 @@
 from typing import Dict, List
 import numpy as np
 
-
 from outlier_detection.exception import IllegalIndexException, MalformedTimeFrameException
 
 
 class LinkDistortionOutlierDetector:
-    def __init__(self, stream_time_frames: Dict):
+    def __init__(self, stream_time_frames: Dict, outlier_threshold=.5):
         self.time_frames = stream_time_frames
+        self.outlier_threshold = outlier_threshold
+
+    def find_outliers(self, time_frame_index) -> List[int]:
+        outliers = list()
+        for link in self.time_frames.keys():
+            link_min_distort = self.min_distort(link, time_frame_index)
+
+            if link_min_distort >= self.outlier_threshold:
+                outliers.append(link)
+
+        return outliers
 
     def min_distort(self, link_index, time_frame_index):
         if link_index not in self.time_frames.keys():
@@ -41,6 +51,3 @@ class LinkDistortionOutlierDetector:
         diff = np.sqrt(
             np.sum(np.array([np.power(tf_1[time_bin] - tf_2[time_bin], 2) for time_bin in range(len(tf_1))])))
         return diff
-
-    def find_outliers(self) -> List:
-        return list()
