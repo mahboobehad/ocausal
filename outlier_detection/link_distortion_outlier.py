@@ -1,11 +1,12 @@
 # In the name of Allah
-from typing import Dict
+from typing import Dict, List
 import numpy as np
+from traitlets import Int
 
 from outlier_detection.exception import IllegalIndexException, MalformedTimeFrameException
 
 
-class LinkDistortion:
+class LinkDistortionOutlier:
     def __init__(self, stream_time_frames: Dict):
         self.time_frames = stream_time_frames
 
@@ -40,3 +41,6 @@ class LinkDistortion:
         diff = np.sqrt(
             np.sum(np.array([np.power(tf_1[time_bin] - tf_2[time_bin], 2) for time_bin in range(len(tf_1))])))
         return diff
+
+    def find_outliers(self) -> List:
+        return list()
