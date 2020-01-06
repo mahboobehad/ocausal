@@ -1,12 +1,12 @@
 # In the name of Allah
 from typing import Dict, List
 import numpy as np
-from traitlets import Int
+
 
 from outlier_detection.exception import IllegalIndexException, MalformedTimeFrameException
 
 
-class LinkDistortionOutlier:
+class LinkDistortionOutlierDetector:
     def __init__(self, stream_time_frames: Dict):
         self.time_frames = stream_time_frames
 
