@@ -2,18 +2,12 @@
 import numpy as np
 
 from outlier_detection.link_feature_outlier_detector import LinkFeatureOutlierDetector
+from outlier_detection.test.stream_generator import generate_random_stream
 
 
 class TestLinkFeatureOutlierDetector:
     def test_find_outlier(self):
-        data_point_dim = 3
-        time_frame_bins = 10
-        time_frame_link_count = 3
-        observation_count = 2
-        stream = {link: [np.array([np.random.randn(data_point_dim) + 1000 for _ in range(time_frame_bins)]) for _ in
-                  range(observation_count)]
-                  for link in range(time_frame_link_count)}
-
+        stream = generate_random_stream(data_point_dims=3, time_frame_bins=10, link_count=4, observation_count=4)
         detector = LinkFeatureOutlierDetector(stream)
         outliers = detector.find_outliers(0)
         assert len(outliers) != 0
