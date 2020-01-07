@@ -2,8 +2,10 @@
 from typing import List, Dict
 from collections import defaultdict
 
+import networkx as nx
+
 from outlier_detection.link_distortion_outlier_detector import LinkDistortionOutlierDetector
-from outlier_detection.link_feature_outlier_detector import LinkFeatureOutlierDetector
+from outlier_detection.link_feature_outlier_detector import LinkFeatureOutlierDetector, FeatureOutlier
 
 
 class SpatialTemporalOutlierDetector:
@@ -23,22 +25,31 @@ class SpatialTemporalOutlierDetector:
     def construct_spatial_temporal_outlier_jungle(self) -> Dict:
         st_outliers = [self.find_outliers(observation_index) for observation_index in range(self.observation_count)]
         trees = defaultdict(list)
-        
+
         for time_frame in range(self.observation_count):
             for sto in st_outliers[time_frame]:
-                trees[time_frame].append(self.construct_spatial_temporal_outlier_tree(sto, time_frame))
+                trees[time_frame].append(self.construct_spatial_temporal_outlier_tree(sto, st_outliers, time_frame))
 
         return trees
 
-    def construct_spatial_temporal_outlier_tree(self, sto, time_frame_index):
+    def construct_spatial_temporal_outlier_tree(self, sto: FeatureOutlier, st_outliers: List[FeatureOutlier],
+                                                time_frame_index, tree=None):
+        if not tree:
+            tree = nx.DiGraph()
+
         if time_frame_index == self.observation_count - 1:
-            return sto
+            return tree
+
+        for next_sto in st_outliers[time_frame_index + 1]:
+            sto_destination = self.edge_incident[sto.link_index][1]
+            next_sto_origin = self.edge_incident[next_sto.link_index][0]
+            if sto_destination == next_sto_origin:
+                tree.add_node(sto)
+                tree.add_node(next_sto)
+                tree.add_edge(sto, next_sto)
+                self.construct_spatial_temporal_outlier_tree(next_sto, st_outliers, time_frame_index + 1, tree)
 
     @staticmethod
     def _find_observation_count(stream_time_frame):
         for key in stream_time_frame.keys():
             return len(stream_time_frame[key])
-
-
-
-
