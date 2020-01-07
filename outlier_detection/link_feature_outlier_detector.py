@@ -19,12 +19,12 @@ class FeatureOutlier:
         if type(other) != type(self):
             return False
         return self.link_index == other.link_index \
-               and self.time_frame_index == other.time_frame_index\
+               and self.time_frame_index == other.time_frame_index \
                and self.time_bin_index == other.time_bin_index
 
 
 class LinkFeatureOutlierDetector:
-    def __init__(self, stream_time_frames: Dict, outlier_threshold=1):
+    def __init__(self, stream_time_frames: Dict, outlier_threshold=1.5):
         self.stream_time_frames = stream_time_frames
         self.outlier_threshold = outlier_threshold
 
