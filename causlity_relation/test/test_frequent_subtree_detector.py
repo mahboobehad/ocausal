@@ -1,4 +1,4 @@
-# In the name of God
+# In the name of Allah
 import networkx as nx
 
 from causlity_relation.frequent_subtree_detector import FrequentSubTreeDetector
