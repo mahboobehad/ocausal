@@ -6,7 +6,6 @@ import networkx as nx
 
 from outlier_detection.link_distortion_outlier_detector import LinkDistortionOutlierDetector
 from outlier_detection.link_feature_outlier_detector import LinkFeatureOutlierDetector, FeatureOutlier
-from random_data_generator import generate_random_stream, generate_random_graph
 
 
 class SpatialTemporalOutlierDetector:

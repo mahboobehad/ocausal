@@ -132,4 +132,5 @@ dmypy.json
 .idea/
 
 # For now ignore pre process phase
-data_pre_processing/
+data_pre_processing/geospatial_data/*
+

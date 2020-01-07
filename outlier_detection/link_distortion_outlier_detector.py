@@ -45,6 +45,7 @@ class LinkDistortionOutlierDetector:
 
     @staticmethod
     def _compute_time_frame_distance(tf_1, tf_2):
+        # todo: Normalize distance
         diff = np.sqrt(
             np.sum(np.array([np.power(tf_1[time_bin] - tf_2[time_bin], 2) for time_bin in range(len(tf_1))])))
         return diff

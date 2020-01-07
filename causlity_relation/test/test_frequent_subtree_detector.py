@@ -4,7 +4,7 @@ import networkx as nx
 from causlity_relation.frequent_subtree_detector import FrequentSubTreeDetector
 from outlier_detection.link_feature_outlier_detector import FeatureOutlier
 from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalOutlierDetector
-from random_data_generator import generate_random_stream, generate_random_graph
+from data_pre_processing.random_data.random_data_generator import generate_random_stream, generate_random_graph
 
 
 class TestFrequentSubtreeDetector:
