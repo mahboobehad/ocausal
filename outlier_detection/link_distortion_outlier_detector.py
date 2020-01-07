@@ -24,9 +24,6 @@ class LinkDistortionOutlierDetector:
         if link_index not in self.time_frames.keys():
             raise IllegalIndexException()
 
-        if not 0 <= time_frame_index <= link_index:
-            raise IllegalIndexException()
-
         link_time_frames = self.time_frames[link_index]
         self._check_link_time_frame_len(link_time_frames)
 

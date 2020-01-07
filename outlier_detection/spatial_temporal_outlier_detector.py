@@ -20,7 +20,7 @@ class SpatialTemporalOutlierDetector:
         spatial_temporal_outliers = list(filter(lambda x: x.link_index in temporal_outliers, spatial_outliers))
         return spatial_temporal_outliers
 
-    def construct_spatial_temporal_outlier_jungle(self):
+    def construct_spatial_temporal_outlier_jungle(self) -> Dict:
         st_outliers = [self.find_outliers(observation_index) for observation_index in range(self.observation_count)]
         trees = defaultdict(list)
         
