@@ -1,6 +1,6 @@
 # In the name of Allah
 from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalOutlierDetector
-from outlier_detection.test.random_data_generator import generate_random_stream, generate_random_graph
+from random_data_generator import generate_random_stream, generate_random_graph
 
 
 class TestSpatialTemporalOutlierDetector:

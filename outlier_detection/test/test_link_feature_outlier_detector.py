@@ -2,7 +2,7 @@
 import numpy as np
 
 from outlier_detection.link_feature_outlier_detector import LinkFeatureOutlierDetector
-from outlier_detection.test.random_data_generator import generate_random_stream
+from random_data_generator import generate_random_stream
 
 
 class TestLinkFeatureOutlierDetector:
