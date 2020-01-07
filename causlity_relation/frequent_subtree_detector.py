@@ -18,7 +18,7 @@ class FrequentSubTreeDetector:
     def find_frequent_nodes(sto_forest: Dict, frequency_threshold):
         node_counter = Counter()
         for time_frame_trees in sto_forest:
-            for tree in time_frame_trees:
+            for tree in sto_forest[time_frame_trees]:
                 for node in tree.nodes():
                     node_counter[node] += 1
 
