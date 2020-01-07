@@ -6,7 +6,7 @@ from outlier_detection.exception import IllegalIndexException, MalformedTimeFram
 
 
 class LinkDistortionOutlierDetector:
-    def __init__(self, stream_time_frames: Dict, outlier_threshold=4):
+    def __init__(self, stream_time_frames: Dict, outlier_threshold=.5):
         self.time_frames = stream_time_frames
         self.outlier_threshold = outlier_threshold
 

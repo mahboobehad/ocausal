@@ -14,8 +14,8 @@ class SpatialTemporalOutlierDetector:
         self.stream_time_frame = stream_time_frame
         self.observation_count = self._find_observation_count(stream_time_frame)
         self.edge_incident = edge_incident
-        self.distortion_outlier_detector = LinkDistortionOutlierDetector(stream_time_frame, outlier_threshold=1)
-        self.feature_outlier_detector = LinkFeatureOutlierDetector(stream_time_frame, outlier_threshold=1)
+        self.distortion_outlier_detector = LinkDistortionOutlierDetector(stream_time_frame)
+        self.feature_outlier_detector = LinkFeatureOutlierDetector(stream_time_frame)
 
     def find_outliers(self, observation_index) -> List:
         temporal_outliers = self.distortion_outlier_detector.find_outliers(observation_index)

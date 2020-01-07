@@ -18,7 +18,7 @@ class TestFrequentSubtreeDetector:
         frequency_threshold = 3
         frequent_subtree_detector = FrequentSubTreeDetector(frequency_threshold)
         frequent_subtrees = frequent_subtree_detector.find_frequent_subtrees(sto_forest)
-        assert frequent_subtrees is not None
+        assert len(frequent_subtrees) != 0
 
     def test_find_frequent_nodes(self):
         sto_list = [FeatureOutlier(0, 0, 0), FeatureOutlier(1, 0, 1)]

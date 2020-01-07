@@ -6,7 +6,7 @@ import networkx as nx
 
 
 class FrequentSubTreeDetector:
-    def __init__(self, edge_incident, frequency_threshold=2):
+    def __init__(self, edge_incident, frequency_threshold=.5):
         self.frequency_threshold = frequency_threshold
         self.edge_incident = edge_incident
 
@@ -14,11 +14,31 @@ class FrequentSubTreeDetector:
         number_of_trees = len(sto_forest)
         node_frequency_threshold = number_of_trees * self.frequency_threshold
         frequent_nodes = self.find_frequent_nodes(sto_forest, node_frequency_threshold)
-        merge_target = frequent_nodes
+        merge_target = list(map(lambda node: nx.DiGraph().add_node(node), frequent_nodes))
         frequent_subtrees = list()
 
         while len(merge_target) > 0:
-            pass
+            subtree_candidates = list()
+            merged_nodes_indexes = list()
+            for node in merge_target:
+                for i, root in enumerate(merge_target):
+                    if root != node:
+                        if self.insert_node(node, root):
+                            subtree_candidates.append(root)
+                            merged_nodes_indexes.append(i)
+
+            for merged in merged_nodes_indexes:
+                del merged_nodes_indexes[merged]
+
+            for candidate in subtree_candidates:
+                count = 0
+                for root in merge_target:
+                    if root in candidate.nodes:
+                        count += 1
+                if count > self.frequency_threshold * number_of_trees:
+                    frequent_subtrees.append(candidate)
+
+        return frequent_subtrees
 
     @staticmethod
     def find_frequent_nodes(sto_forest: Dict, frequency_threshold):

@@ -15,5 +15,5 @@ class TestSpatialTemporalOutlierDetector:
         stream = generate_random_stream(data_point_dims=3, time_frame_bins=10, link_count=4, observation_count=4)
         edge_incident = generate_random_graph(list(stream.keys()), 5)
         detector = SpatialTemporalOutlierDetector(stream, edge_incident)
-        outlier_jungle = detector.construct_spatial_temporal_outlier_forest()
-        assert len(outlier_jungle) != 0
+        outlier_forest = detector.construct_spatial_temporal_outlier_forest()
+        assert len(outlier_forest) != 0
