@@ -14,7 +14,7 @@ def generate_random_graph(links_labels, number_of_nodes):
     edge_incident = dict()
     for label in links_labels:
         u, v = np.random.randint(1, number_of_nodes, 2)
-        while u != v:
+        while u == v:
             u, v = np.random.randint(1, number_of_nodes, 2)
         edge_incident[label] = [u, v]
 
