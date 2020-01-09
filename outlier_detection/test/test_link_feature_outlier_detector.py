@@ -6,7 +6,7 @@ from data_pre_processing.random_data.random_data_generator import generate_rando
 
 class TestLinkFeatureOutlierDetector:
     def test_find_outlier(self):
-        stream = generate_random_stream(data_point_dims=3, time_frame_bins=10, link_count=4, observation_count=4)
+        stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
         detector = LinkFeatureOutlierDetector(stream)
         outliers = detector.find_outliers(0)
         assert len(outliers) != 0

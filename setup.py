@@ -4,12 +4,11 @@ import setuptools
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
-
 setuptools.setup(
     name="probable-pancake",
     version="0.0.1",
-    author="mahboobehad",
     author_email="mahboobe.haddadi@gmail.com",
+    author="mahboobehad",
     description="time frame stream outlier detector",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -21,3 +20,4 @@ setuptools.setup(
     ],
     python_requires='>=3.6',
 )
+

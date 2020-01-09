@@ -13,8 +13,8 @@ class SpatialTemporalOutlierDetector:
         self.stream_time_frame = stream_time_frame
         self.observation_count = self._find_observation_count(stream_time_frame)
         self.edge_incident = edge_incident
-        self.distortion_outlier_detector = LinkDistortionOutlierDetector(stream_time_frame)
-        self.feature_outlier_detector = LinkFeatureOutlierDetector(stream_time_frame)
+        self.distortion_outlier_detector = LinkDistortionOutlierDetector(stream_time_frame, outlier_threshold=0)
+        self.feature_outlier_detector = LinkFeatureOutlierDetector(stream_time_frame, outlier_threshold=0)
 
     def find_outliers(self, observation_index) -> List:
         temporal_outliers = self.distortion_outlier_detector.find_outliers(observation_index)
@@ -35,24 +35,28 @@ class SpatialTemporalOutlierDetector:
         return trees
 
     def construct_spatial_temporal_outlier_tree(self, sto: FeatureOutlier, st_outliers: List[FeatureOutlier],
-                                                time_frame_index, tree=None):
+                                                time_frame_index, tree=None, branched=False):
         if not tree:
             tree = nx.DiGraph()
 
         if time_frame_index == self.observation_count - 1:
             return tree
 
+        if branched and tree:
+            return tree
+
         for next_sto in st_outliers[time_frame_index + 1]:
             sto_destination = self.edge_incident[sto.link_index][1]
             next_sto_origin = self.edge_incident[next_sto.link_index][0]
             if sto_destination == next_sto_origin:
+                branched = True
                 tree.add_node(sto)
                 tree.add_node(next_sto)
                 tree.add_edge(sto, next_sto)
-                self.construct_spatial_temporal_outlier_tree(next_sto, st_outliers, time_frame_index + 1, tree)
+                return self.construct_spatial_temporal_outlier_tree(next_sto, st_outliers, time_frame_index + 1, tree,
+                                                                    branched)
 
     @staticmethod
     def _find_observation_count(stream_time_frame):
         for key in stream_time_frame.keys():
             return len(stream_time_frame[key])
-
