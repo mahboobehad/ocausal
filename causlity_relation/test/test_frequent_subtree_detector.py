@@ -1,5 +1,6 @@
 # In the name of Allah
 import networkx as nx
+import pytest
 
 from causlity_relation.frequent_subtree_detector import FrequentSubTreeDetector
 from outlier_detection.link_feature_outlier_detector import FeatureOutlier
@@ -8,6 +9,7 @@ from data_pre_processing.random_data.random_data_generator import generate_rando
 
 
 class TestFrequentSubtreeDetector:
+    @pytest.mark.skip("Test is time consuming, optimization is required.")
     def test_find_frequent_subtrees(self):
         stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
         edge_incident = generate_random_graph(list(stream.keys()), 5)
