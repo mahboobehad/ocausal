@@ -42,18 +42,19 @@ class SpatialTemporalOutlierDetector:
         if time_frame_index == self.observation_count - 1:
             return tree
 
-        branched = False
+        pruning_allowed = False
         for next_sto in st_outliers[time_frame_index + 1]:
             sto_destination = self.edge_incident[sto.link_index][1]
             next_sto_origin = self.edge_incident[next_sto.link_index][0]
-            if sto_destination == next_sto_origin:
-                branched = not branched
+            can_grow = sto_destination == next_sto_origin
+            pruning_allowed |= can_grow
+            if can_grow:
                 tree.add_node(sto)
                 tree.add_node(next_sto)
                 tree.add_edge(sto, next_sto)
                 return self.construct_spatial_temporal_outlier_tree(next_sto, st_outliers, time_frame_index + 1, tree)
         else:
-            if not branched and tree:
+            if pruning_allowed:
                 return tree
 
     @staticmethod
