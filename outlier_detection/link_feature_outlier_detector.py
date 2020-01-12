@@ -10,37 +10,27 @@ from numpy.linalg import LinAlgError
 class FeatureOutlier:
     link_index: int
     time_bin_index: int
-    time_frame_index: int
-
-    def __hash__(self):
-        return hash(str(self.link_index) + str(self.time_bin_index) + str(self.time_frame_index))
-
-    def __eq__(self, other):
-        if type(other) != type(self):
-            return False
-        return self.link_index == other.link_index \
-               and self.time_frame_index == other.time_frame_index \
-               and self.time_bin_index == other.time_bin_index
+    observation_index: int
 
 
 class LinkFeatureOutlierDetector:
-    def __init__(self, stream_time_frames: Dict, outlier_threshold=1.5):
-        self.stream_time_frames = stream_time_frames
+    def __init__(self, link_observations_stream: Dict, outlier_threshold):
+        self.link_observations_stream = link_observations_stream
         self.outlier_threshold = outlier_threshold
 
-    def find_outliers(self, time_frame_index) -> List[FeatureOutlier]:
+    def find_outliers(self, observation_index) -> List[FeatureOutlier]:
         outliers = list()
-        for link in self.stream_time_frames:
-            for time_bin_index, link_feature in enumerate(self.stream_time_frames[link][time_frame_index]):
+        for link in self.link_observations_stream:
+            for time_bin_index, link_feature in enumerate(self.link_observations_stream[link][observation_index]):
                 distance = self._compute_mahalanobis_distance(link_feature,
-                                                              self.stream_time_frames[link][time_frame_index])
+                                                              self.link_observations_stream[link][observation_index])
                 if distance >= self.outlier_threshold:
-                    outliers.append(FeatureOutlier(link, time_bin_index, time_frame_index))
+                    outliers.append(FeatureOutlier(link, time_bin_index, observation_index))
 
         return outliers
 
     @staticmethod
-    def _compute_mahalanobis_distance(link_feature, all_link_features):
+    def _compute_mahalanobis_distance(link_feature, all_link_features) -> float:
         mu = np.array(all_link_features).mean(axis=0)
         cov = np.cov(all_link_features, rowvar=0)
         try:

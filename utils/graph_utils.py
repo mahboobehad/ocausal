@@ -1,6 +1,6 @@
 # In the name of Allah
-import networkx as nx
 import matplotlib.pyplot as plt
+import networkx as nx
 
 
 def plot_sto_tree(tree: nx.DiGraph):

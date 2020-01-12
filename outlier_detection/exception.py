@@ -8,4 +8,4 @@ class IllegalIndexException(Exception):
 
 class MalformedTimeFrameException(Exception):
     def __init__(self, message):
-        Exception.__init__(message)
+        Exception.__init__(self, message)

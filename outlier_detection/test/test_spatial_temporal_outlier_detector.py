@@ -1,19 +1,15 @@
 # In the name of Allah
-from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalOutlierDetector
 from data_pre_processing.random_data.random_data_generator import generate_random_stream, generate_random_graph
+from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalOutlierDetector
 
 
 class TestSpatialTemporalOutlierDetector:
     def test_find_outliers(self):
         stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
         edge_incident = generate_random_graph(list(stream.keys()), 5)
-        detector = SpatialTemporalOutlierDetector(stream, edge_incident)
-        outliers = detector.find_outliers(observation_index=0)
+        # assume all data points are outlier, check whether it is possible to find causality
+        link_threshold = 0
+        feature_threshold = 0
+        detector = SpatialTemporalOutlierDetector(stream, link_threshold, feature_threshold)
+        outliers = detector.find_observation_outliers(observation_index=0)
         assert len(outliers) != 0
-
-    def test_construct_spatial_temporal_outlier_forest(self):
-        stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
-        edge_incident = generate_random_graph(list(stream.keys()), 5)
-        detector = SpatialTemporalOutlierDetector(stream, edge_incident)
-        outlier_forest = detector.construct_spatial_temporal_outlier_forest()
-        assert len(outlier_forest) != 0

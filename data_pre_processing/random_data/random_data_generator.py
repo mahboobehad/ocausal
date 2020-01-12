@@ -13,9 +13,9 @@ def generate_random_stream(data_point_dims, time_frame_bins, link_count, observa
 def generate_random_graph(links_labels, number_of_nodes):
     edge_incident = dict()
     for label in links_labels:
-        u, v = np.random.randint(1, number_of_nodes, 2)
+        u, v = np.random.randint(1, number_of_nodes + 1, 2)
         while u == v:
-            u, v = np.random.randint(1, number_of_nodes, 2)
+            u, v = np.random.randint(1, number_of_nodes + 1, 2)
         edge_incident[label] = [u, v]
 
     return edge_incident

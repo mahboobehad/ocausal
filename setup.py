@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="probable-pancake",
+    name="probablepancake",
     version="0.0.1",
     author_email="mahboobe.haddadi@gmail.com",
     author="mahboobehad",

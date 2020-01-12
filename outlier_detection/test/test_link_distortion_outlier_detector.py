@@ -1,23 +1,15 @@
 # In the name of Allah
 
-import numpy as np
+from data_pre_processing.random_data.random_data_generator import generate_random_stream
 
 from outlier_detection.link_distortion_outlier_detector import LinkDistortionOutlierDetector
 
 
 class TestLinkDistortion:
-    time_frame = {0: [[np.array([4, 5]), np.array([0, 0])],
-                      [np.array([1, 1]), np.array([0, 0])]]}
-
-    def test_min_distort(self):
-        distortion = LinkDistortionOutlierDetector(self.time_frame)
-        link_index = 0
-        time_frame_index = 0
-        min_distort = distortion.min_distort(link_index, time_frame_index)
-        expected_min_distort = 5.
-        assert min_distort == expected_min_distort
+    stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
+    outlier_threshold = 0
 
     def test_find_outliers(self):
-        distortion = LinkDistortionOutlierDetector(self.time_frame)
+        distortion = LinkDistortionOutlierDetector(self.stream, self.outlier_threshold)
         outliers = distortion.find_outliers(0)
         assert len(outliers) != 0

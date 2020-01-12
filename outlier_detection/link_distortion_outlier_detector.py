@@ -1,39 +1,64 @@
 # In the name of Allah
-from typing import Dict, List
+from typing import Dict, List, Tuple
+
 import numpy as np
 
 from outlier_detection.exception import IllegalIndexException, MalformedTimeFrameException
 
 
 class LinkDistortionOutlierDetector:
-    def __init__(self, stream_time_frames: Dict, outlier_threshold=.5):
-        self.time_frames = stream_time_frames
+    def __init__(self, link_observation_stream: Dict, outlier_threshold):
+        self.stream = link_observation_stream
         self.outlier_threshold = outlier_threshold
 
-    def find_outliers(self, time_frame_index) -> List[int]:
+    def find_outliers(self, observation_index) -> List:
         outliers = list()
-        for link in self.time_frames.keys():
-            link_min_distort = self.min_distort(link, time_frame_index)
+        global_min, global_max = self._find_distort_extrema(observation_index)
+
+        for link in self.stream.keys():
+            link_min_distort = self._find_normalized_min_distort(link, observation_index, global_min, global_max)
 
             if link_min_distort >= self.outlier_threshold:
                 outliers.append(link)
 
         return outliers
 
-    def min_distort(self, link_index, time_frame_index):
-        if link_index not in self.time_frames.keys():
+    def _find_normalized_min_distort(self, link_index, observation_index, global_min, global_max) -> float:
+
+        if link_index not in self.stream.keys():
             raise IllegalIndexException()
 
-        link_time_frames = self.time_frames[link_index]
+        link_time_frames = self.stream[link_index]
         self._check_link_time_frame_len(link_time_frames)
 
         min_distortion = float("+inf")
         for i, tf in enumerate(link_time_frames):
-            if i != time_frame_index:
-                current_distortion = self._compute_time_frame_distance(tf, link_time_frames[time_frame_index])
+            if i != observation_index:
+                current_distortion = self._compute_time_frame_distance(tf, link_time_frames[observation_index])
                 min_distortion = min(current_distortion, min_distortion)
 
-        return min_distortion
+        normalized_link_min_distort = abs((min_distortion - global_min) / global_max if global_max != 0 else (
+                min_distortion - global_min))
+        return normalized_link_min_distort
+
+    def _find_distort_extrema(self, observation_index) -> Tuple:
+        global_max = float('-inf')
+        global_min = float('+inf')
+        for link in self.stream.keys():
+            current_observation = self.stream[observation_index]
+            for i, tf in enumerate(self.stream[link]):
+                if i != observation_index:
+                    current_distort = self._compute_time_frame_distance(current_observation, tf)
+                    global_max = max(current_distort, global_max)
+                    global_min = min(current_distort, global_min)
+
+        return global_min, global_max
+
+    @staticmethod
+    def _compute_time_frame_distance(tf_1, tf_2) -> float:
+        diff = np.sqrt(
+            np.sum(np.array([np.power(tf_1[time_bin] - tf_2[time_bin], 2) for time_bin in range(len(tf_1))])))
+        return diff
 
     @staticmethod
     def _check_link_time_frame_len(link_time_frames):
@@ -43,9 +68,3 @@ class LinkDistortionOutlierDetector:
         if any(len(link_time_frames[i]) != len(link_time_frames[i - 1]) for i in range(1, len(link_time_frames))):
             raise MalformedTimeFrameException("Time frames have not same bins.")
 
-    @staticmethod
-    def _compute_time_frame_distance(tf_1, tf_2):
-        # todo: Normalize distance
-        diff = np.sqrt(
-            np.sum(np.array([np.power(tf_1[time_bin] - tf_2[time_bin], 2) for time_bin in range(len(tf_1))])))
-        return diff

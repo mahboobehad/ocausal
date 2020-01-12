@@ -3,9 +3,9 @@ import networkx as nx
 import pytest
 
 from causlity_relation.frequent_subtree_detector import FrequentSubTreeDetector
+from data_pre_processing.random_data.random_data_generator import generate_random_stream, generate_random_graph
 from outlier_detection.link_feature_outlier_detector import FeatureOutlier
 from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalOutlierDetector
-from data_pre_processing.random_data.random_data_generator import generate_random_stream, generate_random_graph
 
 
 class TestFrequentSubtreeDetector:
@@ -13,8 +13,10 @@ class TestFrequentSubtreeDetector:
     def test_find_frequent_subtrees(self):
         stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
         edge_incident = generate_random_graph(list(stream.keys()), 5)
-
-        outlier_detector = SpatialTemporalOutlierDetector(stream, edge_incident)
+        # assume all data points are outlier, check whether it is possible to find causality
+        link_threshold = 0
+        feature_threshold = 0
+        outlier_detector = SpatialTemporalOutlierDetector(stream, edge_incident, link_threshold, feature_threshold)
         sto_forest = outlier_detector.construct_spatial_temporal_outlier_forest()
 
         frequency_threshold = 3
