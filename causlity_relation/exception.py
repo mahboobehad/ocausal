@@ -4,3 +4,8 @@
 class MalformedSpatialTemporalOutlierList(Exception):
     def __init__(self, message):
         Exception.__init__(self, message)
+
+
+class MalformedSTGraph(Exception):
+    def __init__(self, message):
+        Exception.__init__(self, message)

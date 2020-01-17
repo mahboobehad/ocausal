@@ -6,7 +6,6 @@ from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalO
 class TestSpatialTemporalOutlierDetector:
     def test_find_outliers(self):
         stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
-        edge_incident = generate_random_graph(list(stream.keys()), 5)
         # assume all data points are outlier, check whether it is possible to find causality
         link_threshold = 0
         feature_threshold = 0

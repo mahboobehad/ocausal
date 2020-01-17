@@ -1,82 +1,113 @@
 # In the name of Allah
 from collections import Counter
-from typing import Dict
+from typing import Dict, List, Optional, Set
 
 import networkx as nx
 
+from causlity_relation.exception import MalformedSTGraph
+
 
 class FrequentSubTreeDetector:
-    def __init__(self, edge_incident, frequency_threshold=.5):
-        self.frequency_threshold = frequency_threshold
+    def __init__(self, sto_forest: List[nx.DiGraph], edge_incident: Dict[object, List],
+                 frequency_threshold: float):
         self.edge_incident = edge_incident
-
-    def find_frequent_subtrees(self, sto_forest: Dict):
+        self.sto_forest = sto_forest
         number_of_trees = len(sto_forest)
-        node_frequency_threshold = number_of_trees * self.frequency_threshold
-        frequent_nodes = self.find_frequent_nodes(sto_forest, node_frequency_threshold)
-        merge_target = list(map(lambda node: nx.DiGraph().add_node(node), frequent_nodes))
-        frequent_subtrees = list()
+        self.node_frequency_threshold = frequency_threshold * number_of_trees
 
-        while len(merge_target) > 0:
+    def find_frequent_subtrees(self, depth_limit=float("+inf")) -> Set[Optional[nx.DiGraph]]:
+        frequent_nodes = self._find_frequent_sto()
+        merge_targets = self._construct_frequent_forest(frequent_nodes)
+
+        frequent_subtrees = set()
+        depth = 0
+        while len(merge_targets) > 0 and depth < depth_limit:
+            depth += 1
             subtree_candidates = list()
-            merged_nodes_indexes = list()
-            for node in merge_target:
-                for i, root in enumerate(merge_target):
-                    if root != node:
-                        if self.insert_node(node, root):
-                            subtree_candidates.append(root)
-                            merged_nodes_indexes.append(i)
+            merged_trees = set()
 
-            for merged in merged_nodes_indexes:
-                del merged_nodes_indexes[merged]
+            candidate_generated = False
+            for to_be_merged in merge_targets:
+                for node in to_be_merged.nodes:
+                    for merge_target in merge_targets:
+                        if self._insert_node(node, merge_target):
+                            subtree_candidates.append(merge_target)
+                            merged_trees.add(to_be_merged)
+                            candidate_generated = True
 
+            next_merge_trees = list()
             for candidate in subtree_candidates:
                 count = 0
-                for root in merge_target:
-                    if root in candidate.nodes:
-                        count += 1
-                if count > self.frequency_threshold * number_of_trees:
-                    frequent_subtrees.append(candidate)
+                for merge_target in merge_targets:
+                    for node in merge_target:
+                        if node in candidate.nodes:
+                            count += 1
+                if count >= self.node_frequency_threshold:
+                    frequent_subtrees.add(candidate)
+                    next_merge_trees.append(candidate)
+
+            merge_targets.extend(next_merge_trees)
+
+            for merged in merged_trees:
+                merge_targets.remove(merged)
+
+            if not candidate_generated:
+                merge_targets = list()
 
         return frequent_subtrees
 
-    @staticmethod
-    def find_frequent_nodes(sto_forest: Dict, frequency_threshold):
+    def _find_frequent_sto(self) -> List[Optional[object]]:
         node_counter = Counter()
-        for time_frame_trees in sto_forest:
-            for tree in sto_forest[time_frame_trees]:
-                for node in tree.nodes():
-                    node_counter[node] += 1
 
-        frequent_nodes = list(filter(lambda node: node_counter[node] > frequency_threshold, node_counter.keys()))
+        for tree in self.sto_forest:
+            for node in tree.nodes():
+                node_counter[node.link_index] += 1
+
+        frequent_nodes = list(
+            filter(lambda node: node_counter[node] >= self.node_frequency_threshold, node_counter.keys()))
         return frequent_nodes
 
-    def insert_node(self, node, tree, root=None):
+    def _insert_node(self, to_be_merged: object, tree, root=None) -> bool:
         if not root:
-            root = self.find_root(tree)
-        root_destination = self.edge_incident[root.link_index][1]
-        node_origin = self.edge_incident[node.link_index][0]
+            root = self._find_root(tree)
 
-        if root_destination == node_origin and node not in tree.nodes:
-            tree.add_edge(root, node)
+        tree_root_destination = self.edge_incident[root][1]
+        node_origin = self.edge_incident[to_be_merged][0]
+
+        if tree_root_destination == node_origin and to_be_merged not in tree.nodes:
+            tree.add_edge(root, to_be_merged)
             return True
 
         elif len(tree.nodes) == 1:
             return False
+
         else:
-            for sub_node in self.find_sub_nodes(tree, root):
-                if self.insert_node(node, tree, sub_node):
+            for sub_node in self._find_sub_nodes(tree, root):
+                if self._insert_node(to_be_merged, tree, sub_node):
                     return True
 
         return False
 
     @staticmethod
-    def find_root(tree: nx.DiGraph):
-        for node in tree.nodes:
-            if node.in_degree == 0:
+    def _find_root(tree: nx.DiGraph) -> object:
+        if not nx.is_tree(tree):
+            raise MalformedSTGraph("Graph is not a tree.")
+
+        for node in tree.nodes():
+            if tree.in_degree[node] == 0:
                 return node
 
     @staticmethod
-    def find_sub_nodes(tree: nx.DiGraph, root):
-        successors = nx.dfs_successors(tree, root)
+    def _find_sub_nodes(tree: nx.DiGraph, root):
+        successors = list(dict(nx.bfs_successors(tree, root, depth_limit=1)).values())[0]
         return successors
+
+    @staticmethod
+    def _construct_frequent_forest(frequent_nodes) -> List[nx.DiGraph]:
+        forest = list()
+        for node in frequent_nodes:
+            tree = nx.DiGraph()
+            tree.add_node(node)
+            forest.append(tree)
+
+        return forest

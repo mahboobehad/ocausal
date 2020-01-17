@@ -12,7 +12,7 @@ class OutlierTreeConstructor:
         self.edge_incident = edge_incident
         self.spatial_temporal_outliers = spatial_temporal_outliers
 
-    def construct_spatial_temporal_outlier_forest(self) -> Union[List[None], List[nx.DiGraph]]:
+    def construct_spatial_temporal_outlier_forest(self) -> List[Optional[nx.DiGraph]]:
 
         if len(self.spatial_temporal_outliers) < 2:
             raise MalformedSpatialTemporalOutlierList("More observation is required.")
