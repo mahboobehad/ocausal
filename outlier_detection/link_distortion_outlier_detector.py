@@ -12,6 +12,7 @@ class LinkDistortionOutlierDetector:
         self.outlier_threshold = outlier_threshold
 
     def find_outliers(self, observation_index) -> List:
+        # TODO set window params (steps and adj dist)
         outliers = list()
         global_min, global_max = self._find_distort_extrema(observation_index)
 
