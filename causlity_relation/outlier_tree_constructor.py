@@ -1,5 +1,5 @@
 # In the name of Allah
-from typing import Optional, Dict, List, Union
+from typing import Optional, Dict, List
 
 import networkx as nx
 
