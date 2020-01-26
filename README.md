@@ -7,3 +7,6 @@ Probable-pancake implements a framework provided by a paper titled [Discovering 
 #### Note
 * The project is under development. There's no exampale; for now just running pytest is recommended. 
 * Most of the tests rely on random data, rerun in case of failure.
+
+#### How it works
+![how](asset/how.png)
