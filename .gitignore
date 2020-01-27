@@ -134,3 +134,4 @@ dmypy.json
 # For now ignore pre process phase
 data_pre_processing/
 
+.pypirc
