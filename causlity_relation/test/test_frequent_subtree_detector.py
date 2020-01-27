@@ -9,19 +9,23 @@ from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalO
 
 
 class TestFrequentSubtreeDetector:
-    @pytest.mark.skip("Test is time consuming, optimization is required.")
     def test_find_frequent_subtrees_integrated(self):
-        stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=4, observation_count=4)
-        edge_incident = generate_random_graph(list(stream.keys()), 5)
-        # assume all data points are outlier, check whether it is possible to find causality
+        stream = generate_random_stream(data_point_dims=3, time_frame_bins=5, link_count=10, observation_count=4)
+        edge_incident = generate_random_graph(list(stream.keys()), 30)
+
+        # assume all data points are outliers, check whether it is possible to find causality
         link_threshold = 0
         feature_threshold = 0
         outlier_detector = SpatialTemporalOutlierDetector(stream, link_threshold, feature_threshold)
         outliers = outlier_detector.find_all_outliers()
+        assert len(outliers) != 0
+
         constructor = OutlierTreeConstructor(outliers, edge_incident)
         outlier_forest = constructor.construct_spatial_temporal_outlier_forest()
 
-        frequency_threshold = 1
+        assert len(outlier_forest) != 0
+
+        frequency_threshold = .1
         frequent_subtree_detector = FrequentSubTreeDetector(outlier_forest, edge_incident, frequency_threshold)
         frequent_subtrees = frequent_subtree_detector.find_frequent_subtrees()
         assert len(frequent_subtrees) != 0
