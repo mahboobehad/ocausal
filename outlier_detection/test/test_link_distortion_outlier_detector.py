@@ -1,6 +1,6 @@
 # In the name of Allah
 
-from data_pre_processing.random_data.random_data_generator import generate_random_stream
+from utils.random_data_generator import generate_random_stream
 
 from outlier_detection.link_distortion_outlier_detector import LinkDistortionOutlierDetector
 

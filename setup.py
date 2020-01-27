@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="probablepancake",
+    name="ocausal",
     version="0.0.1",
     author_email="mahboobe.haddadi@gmail.com",
     author="mahboobehad",
@@ -16,7 +16,7 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "License :: OSI Approved :: GPL-3.0",
+        "License :: OSI Approved :: GNU General Public License v3.0 only (GPL-3.0-only)",
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',

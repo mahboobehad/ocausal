@@ -1,5 +1,5 @@
 # In the name of Allah
-from data_pre_processing.random_data.random_data_generator import generate_random_stream, generate_random_graph
+from utils.random_data_generator import generate_random_stream
 from outlier_detection.spatial_temporal_outlier_detector import SpatialTemporalOutlierDetector
 
 
