@@ -46,10 +46,7 @@ class FrequentSubTreeDetector:
                     frequent_subtrees.add(candidate)
                     next_merge_trees.append(candidate)
 
-            merge_targets.extend(next_merge_trees)
-
-            for merged in merged_trees:
-                merge_targets.remove(merged)
+            merge_targets = next_merge_trees
 
             if not candidate_generated:
                 merge_targets = list()
